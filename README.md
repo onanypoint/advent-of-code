@@ -4,7 +4,13 @@ Advent of Code is yearly computer programming challenges that follow an Advent c
 
 ## Editions
 
-- 2015 ([solutions](notebooks/2015.ipynb), [site](https://adventofcode.com/2015))
+- 2015 ([solutions](solutions/aoc2015.py), [site](https://adventofcode.com/2015))
+- 2016 ([site](https://adventofcode.com/2016))
+- 2017 ([site](https://adventofcode.com/2017))
+- 2018 ([site](https://adventofcode.com/2018))
+- 2019 ([site](https://adventofcode.com/2019))
+- 2020 ([site](https://adventofcode.com/2020))
+- 2021 ([site](https://adventofcode.com/2021))
 
 ## Usage
 
@@ -14,7 +20,7 @@ If you wish to generate the `ipynb` files, you can uncomment the `tool.jupytext.
 
 **Add a new year (or notebooks)**
 
-1. Navigate in Jupyter to `notebooks/`
+1. Navigate in Jupyter to `solutions/`
 2. Create a new notebook using your favorite kernel
-3. Watch a python file be automagically created in the `script` folder (if you activated the option).
+3. Watch a python file be automagically created in the `solutions` folder (if you activated the option).
 4. Enjoy
