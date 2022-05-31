@@ -1,0 +1,117 @@
+default_language_version:
+  # force all unspecified python hooks to run python3
+  python: python3
+
+repos:
+  - repo: local
+    hooks:
+      - id: jupytext
+        name: Run Jupytext
+        entry: jupytext
+        language: system
+        args: [--sync]
+        files: 'ipynb'
+
+      - id: end-of-file-fixer
+        name: Fix End of Files
+        description: Ensures that a file is either empty, or ends with one newline.
+        entry: end-of-file-fixer
+        language: python
+        types: [text]
+
+      - id: trailing-whitespace
+        name: Trim Trailing Whitespace
+        description: This hook trims trailing whitespace.
+        entry: trailing-whitespace-fixer
+        args: [--markdown-linebreak-ext=md]
+        language: python
+        types: [text]
+
+      - id: check-ast
+        name: Check python Abstract Syntax Tree
+        entry: check-ast
+        language: python
+        description: Simply check whether files parse as valid python.
+        types: [python]
+
+      - id: check-added-large-files
+        name: Check large files are not committed
+        entry: check-added-large-files
+        language: system
+        description: Prevent giant files from being committed.
+
+      - id: check-merge-conflict
+        name: Check for merge conflicts
+        entry: check-merge-conflict
+        language: python
+        description: Check for files that contain merge conflict strings.
+
+      - id: check-yaml
+        name: Check Yaml files for syntax
+        entry: check-yaml
+        language: python
+        description: Attempts to load all yaml files to verify syntax.
+        types: [yaml]
+
+      - id: check-json
+        name: Check JSON files for syntax
+        entry: check-json
+        language: python
+        description: Attempts to load all json files to verify syntax.
+        types: [json]
+
+      - id: pretty-format-json
+        name: Pretty format JSON
+        entry: pretty-format-json
+        language: python
+        description: Checks that all your JSON files are pretty. "Pretty" here means that keys are sorted and indented.
+        types: [json]
+
+      - id: black
+        name: Format code with Black
+        entry: black
+        language: system
+        types: [python]
+
+      - id: isort
+        name: Sort imports with iSort
+        entry: isort
+        language: system
+        types: [python]
+
+      - id: lint
+        name: Check the quality of the code with pyLint
+        entry: pylint
+        language: system
+        types: [python]
+
+      - id: poetry-check
+        name: poetry-check
+        description: Run poetry check to validate config
+        entry: poetry check
+        language: python
+        pass_filenames: false
+        files: ^pyproject.toml$
+
+      - id: poetry-lock
+        name: poetry-lock
+        description: Run poetry lock to update lock file
+        entry: poetry lock
+        language: python
+        pass_filenames: false
+
+      - id: poetry-export
+        name: poetry-export
+        description: Run poetry export to sync lock file with requirements.txt
+        entry: poetry export
+        language: python
+        pass_filenames: false
+        files: ^poetry.lock$
+        args: ["-o", "requirements.txt", "--without-hashes"]
+
+      - id: requirements-txt-fixer
+        name: Sort pip requirements files
+        description: Sorts entries in requirements.txt
+        entry: requirements-txt-fixer
+        language: python
+        files: requirements.*\.txt$ # Any requirements, requirements-dev, etc
