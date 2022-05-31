@@ -5,29 +5,90 @@ description = "Solutions to the advent of code problems"
 authors = ["Your Name <you@example.com>"]
 license = "MIT"
 
-[tool.poetry.dependencies]
-python = "^3.10"
-numpy = "^1.22.3"
-pandas = "^1.4.2"
-aocd = "^0.1"
-networkx = "^2.8"
+    [tool.poetry.dependencies]
+    python = "^3.10"
+    numpy = "^1.22.3"
+    pandas = "^1.4.2"
+    aocd = "^0.1"
+    networkx = "^2.8"
 
-[tool.poetry.dev-dependencies]
-black = "^22.3.0"
-isort = "^5.10.1"
-pre-commit = "^2.18.1"
-pylint = "^2.13.7"
-jupytext = "^1.13.8"
-pre-commit-hooks = "^4.2.0"
+    [tool.poetry.dev-dependencies]
+    black = "^22.3.0"
+    isort = "^5.10.1"
+    pre-commit = "^2.18.1"
+    pylint = "^2.13.7"
+    jupytext = "^1.13.8"
+    pre-commit-hooks = "^4.2.0"
+    pyupgrade = "^2.32.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.jupytext]
-notebook_metadata_filter = "-all"
-cell_metadata_filter = "-all"
+# [tool.jupytext.formats]
+# "notebooks/" = "ipynb"
+# "solutions/" = "py:percent"
 
-[tool.jupytext.formats]
-"notebooks/" = "ipynb"
-"scripts/" = "py:percent"
+[tool.black]
+line-length = 150
+target-version = ['py310']
+
+[tool.isort]
+# When imports are broken into multi-line, use the "Vertical Hanging Indent" layout.
+multi_line_output = 3
+
+# Always add a trailing comma to import lists (default: False).
+include_trailing_comma = true
+
+# Always put imports lists into vertical mode (0 = none allowed on first line)
+force_grid_wrap = 0
+
+# When multi-lining imports, use parentheses for line-continuation instead of default \.
+use_parentheses = true
+
+# Max import line length.
+line_length = 150
+
+# Regardless of what follows the imports, force 2 blank lines after the import list
+lines_after_imports = 2
+
+# Alphabetical sort in sections (inside a line or in ())
+force_alphabetical_sort_within_sections = true
+
+# Sort by lexicographical
+lexicographical = true
+
+# Put all from before import
+from_first = true
+
+# Inserts a blank line before a comment following an import.
+ensure_newline_before_comments = true
+
+[tool.pylint.master]
+fail-under = 10
+
+[tool.pylint.format]
+max-line-length = "150"
+
+[tool.pylint.basic]
+good-names = [
+    "a",
+    "b",
+    "G",
+    "l",
+    "n",
+    "x",
+    "y",
+    "z",
+]
+
+[tool.pylint.messages_control]
+disable = [
+    "empty-docstring",
+    "missing-class-docstring",
+    "missing-function-docstring",
+    "missing-module-docstring",
+]
+
+[tool.pylint.reports]
+output-format = "colorized"

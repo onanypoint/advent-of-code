@@ -5,13 +5,6 @@ default_language_version:
 repos:
   - repo: local
     hooks:
-      - id: jupytext
-        name: Run Jupytext
-        entry: jupytext
-        language: system
-        args: [--sync]
-        files: 'ipynb'
-
       - id: end-of-file-fixer
         name: Fix End of Files
         description: Ensures that a file is either empty, or ends with one newline.
@@ -67,6 +60,12 @@ repos:
         description: Checks that all your JSON files are pretty. "Pretty" here means that keys are sorted and indented.
         types: [json]
 
+      - id: pyupgrade
+        name: Automatically upgrade syntax for newer versions of the language
+        entry: pyupgrade
+        language: system
+        types: [python]
+
       - id: black
         name: Format code with Black
         entry: black
@@ -79,11 +78,12 @@ repos:
         language: system
         types: [python]
 
-      - id: lint
-        name: Check the quality of the code with pyLint
-        entry: pylint
-        language: system
-        types: [python]
+      # I'm not crazy
+      # - id: lint
+      #   name: Check the quality of the code with pyLint
+      #   entry: pylint
+      #   language: system
+      #   types: [python]
 
       - id: poetry-check
         name: poetry-check
@@ -108,10 +108,3 @@ repos:
         pass_filenames: false
         files: ^poetry.lock$
         args: ["-o", "requirements.txt", "--without-hashes"]
-
-      - id: requirements-txt-fixer
-        name: Sort pip requirements files
-        description: Sorts entries in requirements.txt
-        entry: requirements-txt-fixer
-        language: python
-        files: requirements.*\.txt$ # Any requirements, requirements-dev, etc
