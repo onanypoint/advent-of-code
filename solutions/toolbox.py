@@ -1,3 +1,4 @@
+import functools
 import itertools
 import math
 import re
@@ -38,3 +39,7 @@ def extract_ints(line):
 
 def diff(a, b):
     return abs(a - b)
+
+
+def lcm(lst):
+    return functools.reduce(lambda a, b: (a * b) // math.gcd(a, b), lst)

@@ -479,17 +479,31 @@ data = get_data(year=2016, day=14)
 # ## Day 15
 # https://adventofcode.com/2016/day/15
 # %%
-data = get_data(year=2016, day=15)
+data = get_data(year=2016, day=15).split("\n")
+data = mapl(lambda x: mapl(int, re.findall(r"\d+", x)[1::2]), data)
+
+
+# %%
+def solve(data):
+    for i in range(10000000):
+        for t, (mod, start) in enumerate(data, 1):
+            if (start + t + i) % mod != 0:
+                break
+        else:
+            return i
+
 
 # %% [markdown]
 # Part 1
 
 # %%
+solve(data)
 
 # %% [markdown]
 # Part 2
 
 # %%
+solve(data + [(11, 0)])
 
 
 # %% [markdown]
@@ -498,16 +512,39 @@ data = get_data(year=2016, day=15)
 # %%
 data = get_data(year=2016, day=16)
 
+
+# %%
+def extend(data):
+    return f"{data}0{data[::-1].translate({ord('0'): '1', ord('1'): '0'})}"
+
+
+def format_checksum(data):
+    return "".join(map(str, [int(a == b) for a, b in zip(data[::2], data[1::2])]))
+
+
+# %%
+def get_checksum(data, length):
+    while len(data) < length:
+        data = extend(data)
+
+    checksum = format_checksum(data[:length])
+    while len(checksum) % 2 == 0:
+        checksum = format_checksum(checksum)
+
+    return checksum
+
+
 # %% [markdown]
 # Part 1
 
 # %%
+get_checksum(data, 272)
 
 # %% [markdown]
 # Part 2
 
 # %%
-
+get_checksum(data, 35651584)
 
 # %% [markdown]
 # ## Day 17
@@ -532,67 +569,170 @@ data = get_data(year=2016, day=17)
 # %%
 data = get_data(year=2016, day=18)
 
+
+# %%
+def next_row(row):
+    def tile(sub):
+        return "^" if "".join(sub) in ["^^.", ".^^", "^..", "..^"] else "."
+
+    row = f".{row}."
+    return "".join(tile(sub) for sub in zip(row, row[1:], row[2:]))
+
+
 # %% [markdown]
 # Part 1
 
 # %%
+rows = [data]
+for _ in range(40 - 1):
+    rows.append(next_row(rows[-1]))
+
+"".join(rows).count(".")
 
 # %% [markdown]
 # Part 2
 
 # %%
+rows = [data]
+for _ in range(400000 - 1):
+    rows.append(next_row(rows[-1]))
+
+"".join(rows[:-1]).count(".")
 
 
 # %% [markdown]
 # ## Day 19
 # https://adventofcode.com/2016/day/19
 # %%
-data = get_data(year=2016, day=19)
+data = int(get_data(year=2016, day=19))
 
 # %% [markdown]
 # Part 1
 
+# %% [markdown]
+# > [Josephus Problem](https://en.wikipedia.org/wiki/Josephus_problem) with a nice solution from [Numberphile](https://www.youtube.com/watch?v=uCsD3ZGzMgE)
+
 # %%
+print(int("0b" + bin(data)[3:] + "1", 2))
 
 # %% [markdown]
 # Part 2
 
 # %%
+elves = collections.deque(range(0, data))
 
+remaining = len(elves)
+elves.rotate(-(remaining // 2))
+
+while remaining > 1:
+    if remaining % 2 == 0:
+        elves.rotate(-1)
+
+    elves.popleft()
+    remaining -= 1
+
+elves[0]
 
 # %% [markdown]
 # ## Day 20
 # https://adventofcode.com/2016/day/20
 # %%
-data = get_data(year=2016, day=20)
+data = get_data(year=2016, day=20).split("\n")
+data = [mapl(int, entry.split("-")) for entry in data]
+
+
+# %%
+def get_ips(data):
+    i = 0
+    while i < 2**32:
+        for lower, upper in data:
+            if lower <= i <= upper:
+                i = upper
+                break
+        else:
+            yield i
+
+        i += 1
+
 
 # %% [markdown]
 # Part 1
 
 # %%
+next(get_ips(data))
 
 # %% [markdown]
 # Part 2
 
 # %%
+len(list(get_ips(data)))
 
 
 # %% [markdown]
 # ## Day 21
 # https://adventofcode.com/2016/day/21
 # %%
-data = get_data(year=2016, day=21)
+data = get_data(year=2016, day=21).split("\n")
+data = mapl(lambda x: re.search(r"(\w+) (\w+) (.*)", x).groups(), data)
+
+
+# %% code_folding=[]
+def process(text, instructions):
+    text = list(text)
+
+    for entry in instructions:
+        action, kind, params = entry
+        match action:
+            case "swap":
+                p1, p2 = params[0], params[-1]
+                match kind:
+                    case "position":
+                        pos1, pos2 = int(p1), int(p2)
+                        text[pos1], text[pos2] = text[pos2], text[pos1]
+                    case "letter":
+                        text = list("".join(text).replace(p1, "#").replace(p2, p1).replace("#", p2))
+
+            case "rotate":
+                text = collections.deque(text)
+                match kind:
+                    case "left":
+                        steps = int(params.split(" ")[0])
+                        text.rotate(-steps)
+                    case "right":
+                        steps = int(params.split(" ")[0])
+                        text.rotate(steps)
+                    case "based":
+                        idx = text.index(params[-1])
+                        steps = idx + 1 + (1 * (idx >= 4))
+                        text.rotate(steps)
+
+                text = list(text)
+
+            case "reverse":
+                pos1, pos2 = int(params[0]), int(params[-1])
+                text = text[:pos1] + list(text[pos1 : pos2 + 1])[::-1] + text[pos2 + 1 :]
+
+            case "move":
+                text.insert(int(params[-1]), text.pop(int(params[0])))
+
+    return "".join(text)
+
 
 # %% [markdown]
 # Part 1
 
-# %%
+# %% code_folding=[0]
+process("abcdefgh", data)
+
 
 # %% [markdown]
 # Part 2
 
 # %%
-
+for text in itertools.permutations("fbgdceah"):
+    if "fbgdceah" == process(text, data):
+        print("".join(text))
+        break
 
 # %% [markdown]
 # ## Day 22

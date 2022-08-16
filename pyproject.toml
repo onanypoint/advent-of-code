@@ -2,7 +2,7 @@
 name = "advent-of-code"
 version = "0.1.0"
 description = "Solutions to the advent of code problems"
-authors = ["Your Name <you@example.com>"]
+authors = ["onanypoint <onanypoint@gmail.com>"]
 license = "MIT"
 
     [tool.poetry.dependencies]
@@ -12,6 +12,7 @@ license = "MIT"
     aocd = "^0.1"
     networkx = "^2.8"
     tqdm = "^4.64.0"
+    more-itertools = "^8.14.0"
 
     [tool.poetry.dev-dependencies]
     black = "^22.3.0"

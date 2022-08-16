@@ -6,11 +6,11 @@ Advent of Code is yearly computer programming challenges that follow an Advent c
 
 - 2015 ([solutions](solutions/aoc2015.py), [site](https://adventofcode.com/2015))
 - 2016 ([solutions](solutions/aoc2016.py), [site](https://adventofcode.com/2016))
-- 2017 ([site](https://adventofcode.com/2017))
-- 2018 ([site](https://adventofcode.com/2018))
-- 2019 ([site](https://adventofcode.com/2019))
-- 2020 ([site](https://adventofcode.com/2020))
-- 2021 ([site](https://adventofcode.com/2021))
+- 2017 ([solutions](solutions/aoc2017.py), [site](https://adventofcode.com/2017))
+- 2018 ([solutions](solutions/aoc2018.py), [site](https://adventofcode.com/2018))
+- 2019 ([solutions](solutions/aoc2019.py), [site](https://adventofcode.com/2019))
+- 2020 ([solutions](solutions/aoc2020.py), [site](https://adventofcode.com/2020))
+- 2021 ([solutions](solutions/aoc2021.py), [site](https://adventofcode.com/2021))
 
 ## Usage
 
