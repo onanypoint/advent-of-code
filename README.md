@@ -11,10 +11,11 @@ Advent of Code is yearly computer programming challenges that follow an Advent c
 - 2019 ([solutions](solutions/aoc2019.py), [site](https://adventofcode.com/2019))
 - 2020 ([solutions](solutions/aoc2020.py), [site](https://adventofcode.com/2020))
 - 2021 ([solutions](solutions/aoc2021.py), [site](https://adventofcode.com/2021))
+- 2021 ([solutions](solutions/aoc2022.py), [site](https://adventofcode.com/2022))
 
 ## Usage
 
-This repository is setup using [Poetry](https://python-poetry.org/) (a complimentary `requirements.txt` is available) and uses [Jupyter Notebook](https://jupyter.org/) for code development. The notebooks are processed via [jupytext](https://jupytext.readthedocs.io/) to move between notebooks (`.ipynb`) and Python files.
+This repository is setup using [Poetry](https://python-poetry.org/) and uses [Jupyter Notebook](https://jupyter.org/) for code development. The notebooks are processed via [jupytext](https://jupytext.readthedocs.io/) to move between notebooks (`.ipynb`) and Python files.
 
 If you wish to generate the `ipynb` files, you can uncomment the `tool.jupytext.formats` part of the `pyproject.toml` and enable a pre-commit hook to run `juyptext-sync`.
 

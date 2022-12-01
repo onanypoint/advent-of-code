@@ -99,12 +99,3 @@ repos:
         entry: poetry lock
         language: python
         pass_filenames: false
-
-      - id: poetry-export
-        name: poetry-export
-        description: Run poetry export to sync lock file with requirements.txt
-        entry: poetry export
-        language: python
-        pass_filenames: false
-        files: ^poetry.lock$
-        args: ["-o", "requirements.txt", "--without-hashes"]
