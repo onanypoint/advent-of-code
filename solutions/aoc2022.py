@@ -19,6 +19,7 @@
 from dataclasses import dataclass
 import collections
 import copy
+import enum
 import functools
 import hashlib
 import itertools
@@ -63,18 +64,65 @@ sum(sorted(data, reverse=True)[:3])
 # https://adventofcode.com/2022/day/2
 
 # %%
-data = get_data(year=2022, day=2)
+data = get_data(year=2022, day=2).split("\n")
+data = [l.split() for l in data]
 
+
+# %%
+moves = {
+    "A": 1,
+    "B": 2,
+    "C": 3,
+}
+
+shapes = {
+    "X": 1,
+    "Y": 2,
+    "Z": 3,
+}
 
 # %% [markdown]
 # Part 1
 
 # %%
+score = 0
+for x, y in data:
+    if moves[x] == shapes[y]:
+        score += 3
+    elif (x, y) in [("A", "Y"), ("B", "Z"), ("C", "X")]:
+        score += 6
+
+    score += shapes[y]
+
+score
 
 # %% [markdown]
 # Part 2
 
 # %%
+decisions = {
+    "X": {"A": "Z", "B": "X", "C": "Y"},
+    "Y": {"A": "X", "B": "Y", "C": "Z"},
+    "Z": {"A": "Y", "B": "Z", "C": "X"},
+}
+
+# %%
+score = 0
+for x, y in data:
+
+    move = decisions[y][x]
+
+    match y:
+        case "X":
+            score += 0
+        case "Y":
+            score += 3
+        case "Z":
+            score += 6
+
+    score += shapes[move]
+
+score
 
 # %% [markdown]
 # ## Day 03
