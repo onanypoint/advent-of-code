@@ -129,18 +129,38 @@ score
 # https://adventofcode.com/2022/day/3
 
 # %%
-data = get_data(year=2022, day=3)
+data = get_data(year=2022, day=3).split("\n")
+
+
+def score(s):
+    if s.isupper():
+        return ord(s) - 65 + 27
+
+    return ord(s) - 96
 
 
 # %% [markdown]
 # Part 1
 
 # %%
+total = 0
+for entry in data:
+    a = set(entry[: len(entry) // 2])
+    b = set(entry[len(entry) // 2 :])
+    total += sum(mapl(score, a & b))
+
+total
 
 # %% [markdown]
 # Part 2
 
 # %%
+total = 0
+for entries in more_itertools.chunked(data, 3):
+    c = next(iter(set.intersection(*map(set, entries))))
+    total += score(c)
+
+total
 
 # %% [markdown]
 # ## Day 04
