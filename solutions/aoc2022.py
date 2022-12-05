@@ -34,6 +34,7 @@ import sys
 from aocd import get_data, submit
 from toolbox import *
 from tqdm import tqdm
+import more_itertools
 import networkx as nx
 import numpy as np
 import scipy
@@ -167,36 +168,64 @@ total
 # https://adventofcode.com/2022/day/4
 
 # %%
-data = get_data(year=2022, day=4)
+data = get_data(year=2022, day=4).split()
+data = [mapl(int, re.search(r"(\d+)-(\d+),(\d+)-(\d+)", l).groups()) for l in data]
 
 
 # %% [markdown]
 # Part 1
 
 # %%
+sum((a1 <= b1 and b2 <= a2) or (b1 <= a1 and a2 <= b2) for a1, a2, b1, b2 in data)
 
 # %% [markdown]
 # Part 2
 
 # %%
+sum(a1 <= b2 and b1 <= a2 for a1, a2, b1, b2 in data)
 
 # %% [markdown]
 # ## Day 05
 # https://adventofcode.com/2022/day/5
 
 # %%
-data = get_data(year=2022, day=5)
+state, moves = get_data(year=2022, day=5).split("\n\n")
+
+
+# %%
+def get_crates(state):
+    crates = collections.defaultdict(list)
+    for row in state.splitlines()[-2::-1]:
+        for index, value in enumerate(row[1::4], 1):
+            if value.strip():
+                crates[index].append(value)
+
+    return crates
 
 
 # %% [markdown]
 # Part 1
 
 # %%
+crates = get_crates(state)
+for move in moves.splitlines():
+    a, b, c = mapl(int, move.split(" ")[1::2])
+    for _ in range(a):
+        crates[c].append(crates[b].pop())
+
+"".join(val[-1] for val in crates.values())
 
 # %% [markdown]
 # Part 2
 
 # %%
+crates = get_crates(state)
+for move in moves.splitlines():
+    a, b, c = mapl(int, move.split(" ")[1::2])
+    acc = [crates[b].pop() for _ in range(a)]
+    crates[c].extend(acc[::-1])
+
+"".join(val[-1] for val in crates.values())
 
 # %% [markdown]
 # ## Day 06
