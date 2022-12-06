@@ -46,10 +46,19 @@ import scipy
 
 # %%
 data = get_data(year=2022, day=1).split("\n\n")
-data = [sum(mapl(int, entry.split("\n"))) for entry in data]
+# data = [sum(mapl(int, entry.split("\n"))) for entry in data]
+
+# %%
+a = [entry.split() for entry in data]
+
+# %%
+a
 
 # %% [markdown]
 # Part 1
+
+# %%
+data
 
 # %%
 max(data)
@@ -235,15 +244,24 @@ for move in moves.splitlines():
 data = get_data(year=2022, day=6)
 
 
+# %%
+def get_after(n):
+    for i in range(0, len(data)):
+        if len(set(data[i : i + n])) == n:
+            return i + n
+
+
 # %% [markdown]
 # Part 1
 
 # %%
+get_after(4)
 
 # %% [markdown]
 # Part 2
 
 # %%
+get_after(14)
 
 # %% [markdown]
 # ## Day 07
