@@ -40,25 +40,19 @@ import numpy as np
 import scipy
 
 
+# %%
+idefaultdict = lambda: collections.defaultdict(idefaultdict)
+
 # %% [markdown]
 # ## Day 01
 # https://adventofcode.com/2022/day/1
 
 # %%
 data = get_data(year=2022, day=1).split("\n\n")
-# data = [sum(mapl(int, entry.split("\n"))) for entry in data]
-
-# %%
-a = [entry.split() for entry in data]
-
-# %%
-a
+data = [sum(mapl(int, entry.split("\n"))) for entry in data]
 
 # %% [markdown]
 # Part 1
-
-# %%
-data
 
 # %%
 max(data)
@@ -268,25 +262,51 @@ get_after(14)
 # https://adventofcode.com/2022/day/7
 
 # %%
-data = get_data(year=2022, day=7)
+data = get_data(year=2022, day=7).split("\n")
 
+# %%
+sizes = []
+
+
+def parse(iterator):
+    total_size = 0
+    for entry in iterator:
+        match entry.split():
+            case "$", "cd", "..":
+                return total_size
+            case "$", "cd", _:
+                sizes.append(parse(iterator))
+                total_size += sizes[-1]
+            case "$", _:
+                continue
+            case a, b if a != "dir":
+                total_size += int(a)
+
+    return total_size
+
+
+parse(iter(data))
 
 # %% [markdown]
 # Part 1
 
 # %%
+sum(v for v in sizes if v <= 100000)
 
 # %% [markdown]
 # Part 2
 
 # %%
+unused = 70000000 - total_size
+
+min(v for v in sizes if unused + v >= 30000000)
 
 # %% [markdown]
 # ## Day 08
 # https://adventofcode.com/2022/day/8
 
 # %%
-data = get_data(year=2022, day=8)
+lines = get_data(year=2022, day=8).split("\n")
 
 
 # %% [markdown]
@@ -304,8 +324,13 @@ data = get_data(year=2022, day=8)
 # https://adventofcode.com/2022/day/9
 
 # %%
-data = get_data(year=2022, day=9)
+data = get_data(year=2022, day=9).split("\n")
+data = [entry.split() for entry in data]
+data = [(a, int(b)) for a, b in data]
 
+
+# %%
+MOVES = {"L": -1, "R": 1, "U": 1j, "D": -1j}
 
 # %% [markdown]
 # Part 1
@@ -322,17 +347,41 @@ data = get_data(year=2022, day=9)
 # https://adventofcode.com/2022/day/10
 
 # %%
-data = get_data(year=2022, day=10)
+data = get_data(year=2022, day=10).split("\n")
+
+# %%
+acc = [1]
+crt = [[" " for _ in range(40)] for _ in range(6)]
+
+
+def step(value):
+    acc.append(value)
+    current_count = len(acc) - 1
+
+    if abs(current_count % 40 - value) < 2:
+        crt[current_count // 40][current_count % 40] = "#"
+
+
+for entry in data:
+    match entry.split():
+        case ["noop"]:
+            step(acc[-1])
+        case "addx", a:
+            step(acc[-1])
+            step(acc[-1] + int(a))
 
 # %% [markdown]
 # Part 1
 
 # %%
+sum(ptr * acc[ptr - 1] for ptr in [20, 60, 100, 140, 180, 220])
 
 # %% [markdown]
 # Part 2
 
 # %%
+for row in crt:
+    print("".join(row))
 
 
 # %% [markdown]
@@ -340,18 +389,58 @@ data = get_data(year=2022, day=10)
 # https://adventofcode.com/2022/day/11
 
 # %%
-data = get_data(year=2022, day=11)
+data = get_data(year=2022, day=11).split("\n\n")
+
+operators = {
+    "*": operator.mul,
+    "+": operator.add,
+    "pow": operator.pow,
+}
+
+regex = re.compile(
+    r"Monkey \d+:\n  Starting items: (.*?)\n  Operation: new = old ([*+]) (\d+|old)\n  Test: divisible by (\d+)\n    If true: throw to monkey (\d+)\n    If false: throw to monkey (\d+)",
+)
+
+monkeys = []
+for entry in data:
+    levels, op, *nums = re.match(regex, entry).groups()
+
+    if nums[0] == "old":
+        op = "pow"
+        nums[0] = 2
+
+    monkeys.append((mapl(int, levels.split(", ")), operators[op], *mapl(int, nums)))
+
+# %%
+lcm = math.lcm(*map(operator.itemgetter(3), monkeys))
+
+
+# %%
+def run(monkeys, turns=20, divide=3):
+    monkeys = copy.deepcopy(monkeys)
+    counts = [0 for _ in range(len(monkeys))]
+    for _ in range(turns):
+        for m, (levels, op, val, limit, t, f) in enumerate(monkeys):
+            while levels:
+                level = (op(levels.pop(0), val) // divide) % lcm
+                next_monkey_idx = t if (level % limit) == 0 else f
+                monkeys[next_monkey_idx][0].append(level)
+                counts[m] += 1
+
+    return operator.mul(*sorted(counts)[-2:])
+
 
 # %% [markdown]
 # Part 1
 
 # %%
+run(monkeys, turns=20)
 
 # %% [markdown]
 # Part 2
 
 # %%
-
+run(monkeys, turns=10000, divide=1)
 
 # %% [markdown]
 # ## Day 12
@@ -359,16 +448,47 @@ data = get_data(year=2022, day=11)
 
 # %%
 data = get_data(year=2022, day=12)
+data = np.array(mapl(list, data.split("\n")))
+
+h = len(data)
+w = len(data[0])
+
+# %%
+[[sy], [sx]] = np.where(data == "S")
+[[ey], [ex]] = np.where(data == "E")
+
+data[sy, sx] = "a"
+data[ey, ex] = "z"
+
+# %%
+G = nx.DiGraph()
+
+for y, x in itertools.product(*map(range, data.shape)):
+    for dy, dx in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+        qy, qx = y + dy, x + dx
+
+        if 0 < qy < len(data) and 0 < qx < len(data[0]) and ord(data[qy, qx]) <= ord(data[y, x]) + 1:
+            G.add_edge((y, x), (qy, qx))
+
 
 # %% [markdown]
 # Part 1
 
 # %%
+len(nx.shortest_path(G, (sy, sx), (ey, ex))) - 1
 
 # %% [markdown]
 # Part 2
 
 # %%
+path_length = float("inf")
+for pos in zip(*np.where(data == "a")):
+    try:
+        path_length = min(path_length, len(nx.shortest_path(G, pos, (ey, ex))) - 1)
+    except:
+        pass
+
+path_length
 
 
 # %% [markdown]
