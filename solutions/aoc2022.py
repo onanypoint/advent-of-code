@@ -496,18 +496,66 @@ path_length
 # https://adventofcode.com/2022/day/13
 
 # %%
-data = get_data(year=2022, day=13)
+data = get_data(year=2022, day=13).split("\n\n")
+data = [mapl(eval, entry.split("\n")) for entry in data]
+
+
+# %%
+def compare(left, right):
+    match left, right:
+        case int(), int():
+            if left < right:
+                return 1
+
+            if left == right:
+                return 0
+
+            return -1
+
+        case list(), list():
+            for a, b in zip(left, right):
+                if value := compare(a, b):
+                    return value
+
+            if len(left) < len(right):
+                return 1
+
+            if len(left) > len(right):
+                return -1
+
+            return 0
+
+        case int(), list():
+            return compare([left], right)
+        case _:
+            return compare(left, [right])
+
 
 # %% [markdown]
 # Part 1
 
 # %%
+sum(i for i, (left, right) in enumerate(data, 1) if compare(left, right) == 1)
 
 # %% [markdown]
 # Part 2
 
 # %%
+data = [
+    [[2]],
+    [[6]],
+    *[entry for entries in data for entry in entries],
+]
 
+data = sorted(data2, key=ft.cmp_to_key(lambda a, b: -compare(a, b)))
+
+# %%
+count = 1
+for i, k in enumerate(data2, 1):
+    if k in [[[2]], [[6]]]:
+        S *= i
+
+count
 
 # %% [markdown]
 # ## Day 14
